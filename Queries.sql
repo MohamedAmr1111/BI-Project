@@ -25,7 +25,7 @@ having Sum(po.quantity * p.price) > (
 )
 order by "total price" desc
 
-----------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 -- Get 10 Vendors Supplying the Cheapest Product
 select
 top(10) v.vname,
@@ -37,6 +37,7 @@ on vp.vid = v.vid
 inner join MarketSchema.product p
 on p.pid = vp.pid
 order by "vendor cost" asc
+----------------------------------------------------------------------------------------------------------------------
 --Get Vendors Supplying the Cheapest Product
 select 
 v.vname,
@@ -49,7 +50,7 @@ inner join MarketSchema.product p
 on p.pid = vp.pid 
 where p.cost = (select MIN(p.cost) from MarketSchema.product p)
 
--------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 --Create a Function to Calculate Profit Margin for a Product
 create function ProfitMargin(@name varchar(50))
 returns float
@@ -64,7 +65,7 @@ returns float
 -- Calling Function
 select dbo.ProfitMargin('Iced Tea')
 
-----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 -- Trigger to make sure admin only have the permission to delete 
 create trigger AdminOnlyDelete
 on MarketSchema.product
@@ -90,7 +91,7 @@ set payid = 2
 where oid = 1
 select * from MarketSchema.orders where oid = 1
 
--------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 -- add column net salary in employee table
 alter table EmployeeSchema.Employee
 add Net_Salary float
@@ -114,7 +115,7 @@ close c1;
 deallocate c1;
 -- CHECK
 select * from EmployeeSchema.employee where emp_id = 1
--------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 -- update discount to be 0.02 on all product_order using cursor
 declare c2 cursor
 for select po.oid,po.pid,p.price 
@@ -134,7 +135,7 @@ while @@FETCH_STATUS = 0
 end;
 close c2;
 deallocate c2;
-
+----------------------------------------------------------------------------------------------------------------------
 -- Another way update discount to be 0.02 on all product_order 
 update MarketSchema.product_order 
 set discount = subquery.price * 0.02
@@ -153,7 +154,7 @@ where product_order.pid = subquery.pid
 select * from MarketSchema.product
 select * from MarketSchema.product_order
 
---------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 -- Rank Employees by Sales Contribution
 select * from (select o.eid ,CONCAT(e.fname,' ',e.lname) as fullname,SUM(total_price) AS total_price_sum
 ,ROW_NUMBER() over (order by Sum(total_price) desc) as RN
@@ -173,7 +174,7 @@ FROM (
     GROUP BY eid
 ) AS subquery)
 
------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 -- Find numbers of vendors for each product
 select
 newtable.pname,
@@ -191,7 +192,7 @@ from
 ) as newtable
 group by newtable.pname
 
-----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 -- Function to find vendors name for each product
 alter function GetNames(@pname varchar(30))
 returns table
@@ -212,7 +213,7 @@ return
 
 -- CALLING		
 select * from GetNames('tea')
-----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 -- Create View vendor profit summary for each producr
 create view VendorProfitSummary as
 select
@@ -228,7 +229,7 @@ group by v.vname,p.pname
 
 -- CHECK
 select * from VendorProfitSummary
-----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 --Windowing Functions(LAG,LEAD)
 SELECT emp_id, fname, lname, Net_Salary,
        PREV_FullName = CONCAT(PREV_fname, ' ', PREV_lname),
@@ -245,7 +246,7 @@ FROM (
            LEAD(Net_Salary) OVER (ORDER BY Net_Salary) AS NEX_NetSalary
     FROM EmployeeSchema.employee
 ) AS newtable
-----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------
 --Measure Performance of Employees
 SELECT 
     eid,
@@ -273,7 +274,7 @@ FROM (
 
 
 
-select * from MarketSchema.orders
+
 
 
 
