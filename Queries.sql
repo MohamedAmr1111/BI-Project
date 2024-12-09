@@ -245,9 +245,35 @@ FROM (
            LEAD(Net_Salary) OVER (ORDER BY Net_Salary) AS NEX_NetSalary
     FROM EmployeeSchema.employee
 ) AS newtable
+----------------------------------------------------------------------------------------------
+--Measure Performance of Employees
+SELECT 
+    eid,
+	fullname,
+    Total_Price,
+    ROW_NUMBER() OVER ( ORDER BY Total_Price desc) AS RN
+FROM (
+    SELECT 
+        o.eid, 
+        SUM(Total_Price) AS Total_Price,
+		CONCAT(e.fname,' ',e.lname) as fullname
+    FROM MarketSchema.orders o inner join EmployeeSchema.employee e
+	on e.emp_id = o.eid
+    GROUP BY o.eid , CONCAT(e.fname,' ',e.lname)
+) AS DerivedTable
 
 
 
+
+
+
+
+
+
+
+
+
+select * from MarketSchema.orders
 
 
 
